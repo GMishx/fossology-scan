@@ -1,0 +1,53 @@
+# Copyright Siemens AG 2021, gaurav.mishra@siemens.com
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# version 2 as published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+name: 'FOSSology scan'
+description: 'Run license and copyright scans'
+branding:
+  icon: 'search'
+  color: 'orange'
+inputs:
+  scan-mode:
+    description: 'Whether to perform diff scan or repo scan'
+    required: false
+    default: 'diff'
+  scanners:
+    description: 'Which scanners to invoke'
+    required: true
+    default: 'nomos ojo copyright keyword'
+  api_url:
+    description: 'Base URL of Github API'
+    required: false
+    default: 'https://api.github.com'
+  repository:
+    description: 'Repository name'
+    required: false
+    default: ${{ github.repository }}
+  base_ref:
+    description: 'Target branch'
+    required: false
+    default: ${{ github.base_ref }}
+  head_ref:
+    description: 'Source branch'
+    required: false
+    default: ${{ github.head_ref }}
+
+runs:
+  using: 'docker'
+  image: 'docker://gmishx/fossology-ci:actions'
+  args:
+    - '/bin/fossologyscanner'
+    - ${{ inputs.scan-mode }}
+    - ${{ inputs.scanners }}
